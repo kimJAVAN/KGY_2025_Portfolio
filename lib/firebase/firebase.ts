@@ -12,7 +12,7 @@ const firebaseConfig = {
 };
 
 // firebaseConfig 값이 제대로 로드되는지 확인
-console.log("Firebase Config:", firebaseConfig);
+// console.log("Firebase Config:", firebaseConfig);
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
