@@ -1,5 +1,6 @@
 // app/page.tsx
 import Link from 'next/link';
+import { Button } from '@/components/common/Button';
 
 export default function HomePage() {
   return (
@@ -20,18 +21,12 @@ export default function HomePage() {
         </p>
         
         <div className="flex gap-4">
-          <Link
-            href="/blog"
-            className="rounded-md bg-blue-600 px-6 py-3 text-white hover:bg-blue-700"
-          >
-            블로그 보기
-          </Link>
-          <Link
-            href="/about"
-            className="rounded-md border border-gray-300 px-6 py-3 hover:bg-gray-100"
-          >
-            소개
-          </Link>
+          <Button asChild size="lg">
+            <Link href="/blog">블로그 보기</Link>
+          </Button>
+          <Button asChild variant="outline" size="lg">
+            <Link href="/about">소개</Link>
+          </Button>
         </div>
       </section>
 
