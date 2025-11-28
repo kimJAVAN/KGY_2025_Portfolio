@@ -36,11 +36,20 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => { // asChild 구조 분해 할당 및 기본값 설정
-    const Comp = asChild ? React.Fragment : 'button'; // asChild가 true이면 Fragment, 아니면 button 엘리먼트 렌더링
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? React.Fragment : 'button';
+    const combinedClassName = cn(buttonVariants({ variant, size, className }));
+
+    if (asChild && React.isValidElement(props.children)) {
+      return React.cloneElement(props.children, {
+        className: cn(props.children.props.className, combinedClassName),
+        ref,
+      });
+    }
+
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={combinedClassName}
         ref={ref}
         {...props}
       />

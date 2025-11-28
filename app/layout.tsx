@@ -18,9 +18,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" suppressHydrationWarning> {/* suppressHydrationWarning 추가 */}
-      <body className={`${inter.className} flex flex-col min-h-screen bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100`}> {/* 배경색 및 텍스트 색상 추가 */}
-        <Providers> {/* Providers 컴포넌트로 감싸기 */}
+    <html lang="ko" suppressHydrationWarning>
+      <body className={`${inter.className} flex flex-col min-h-screen bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100`}>
+        <Providers>
           <Header />
           <main className="flex-grow">{children}</main>
           <Footer />
