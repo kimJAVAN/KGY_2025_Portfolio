@@ -54,21 +54,29 @@ export default function PostForm() {
       });
       await createPost(validated);
       router.push('/blog');
-    } catch (error: any) {
-      if (error.errors) {
-        const newErrors: Record<string, string> = {};
-        error.errors.forEach((err: any) => {
-          newErrors[err.path[0]] = err.message;
-        });
-        setErrors(newErrors);
+    } catch (error: unknown) { // 'any' 대신 'unknown' 사용
+      if (error instanceof Error) {
+        if (error.errors) { // Zod validation error
+          const newErrors: Record<string, string> = {};
+          error.errors.forEach((err: any) => { // Zod error의 경우 any 사용
+            newErrors[err.path[0]] = err.message;
+          });
+          setErrors(newErrors);
+        } else { // 일반 Error 객체
+          setErrors({ general: error.message || "알 수 없는 오류가 발생했습니다." });
+        }
+      } else {
+        // 알 수 없는 타입의 오류
+        setErrors({ general: "알 수 없는 오류가 발생했습니다." });
       }
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
+      {errors.general && <p className="mt-1 text-sm text-red-600">{errors.general}</p>}
       <div>
-        <label htmlFor="title" className="block text-sm font-medium mb-2">
+        <label htmlFor="title" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
           제목 *
         </label>
         <Input
@@ -82,7 +90,7 @@ export default function PostForm() {
       </div>
 
       <div>
-        <label htmlFor="slug" className="block text-sm font-medium mb-2">
+        <label htmlFor="slug" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
           URL 슬러그 (비워두면 제목으로 자동 생성)
         </label>
         <Input
@@ -97,7 +105,7 @@ export default function PostForm() {
       </div>
 
       <div>
-        <label htmlFor="excerpt" className="block text-sm font-medium mb-2">
+        <label htmlFor="excerpt" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
           요약
         </label>
         <Textarea
@@ -110,7 +118,7 @@ export default function PostForm() {
       </div>
 
       <div>
-        <label htmlFor="content" className="block text-sm font-medium mb-2">
+        <label htmlFor="content" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
           내용 *
         </label>
         <Textarea
@@ -124,7 +132,7 @@ export default function PostForm() {
       </div>
 
       <div>
-        <label htmlFor="coverImage" className="block text-sm font-medium mb-2">
+        <label htmlFor="coverImage" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
           커버 이미지 URL
         </label>
         <Input
@@ -137,7 +145,7 @@ export default function PostForm() {
       </div>
 
       <div>
-        <label htmlFor="tags" className="block text-sm font-medium mb-2">
+        <label htmlFor="tags" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
           태그 (쉼표로 구분)
         </label>
         <Input
@@ -157,9 +165,9 @@ export default function PostForm() {
           type="checkbox"
           checked={formData.published}
           onChange={handleChange}
-          className="h-4 w-4 rounded border-gray-300"
+          className="h-4 w-4 rounded border-gray-300 dark:border-gray-700 dark:bg-gray-700" // 다크 모드 스타일 추가
         />
-        <label htmlFor="published" className="ml-2 text-sm">
+        <label htmlFor="published" className="ml-2 text-sm text-gray-700 dark:text-gray-300">
           바로 게시하기
         </label>
       </div>

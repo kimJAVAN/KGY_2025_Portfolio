@@ -1,4 +1,6 @@
 import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"; // getFirestore 임포트
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -9,5 +11,10 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
+// firebaseConfig 값이 제대로 로드되는지 확인
+console.log("Firebase Config:", firebaseConfig);
+
 const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const db = getFirestore(app); // db 객체 export
 export default app;

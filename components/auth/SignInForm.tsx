@@ -1,34 +1,30 @@
-// components/auth/SignUpForm.tsx
+// components/auth/SignInForm.tsx
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth"; // Firebase Auth 임포트
+import { signInWithEmailAndPassword } from "firebase/auth"; // Firebase Auth 임포트
 import { auth } from "@/lib/firebase/firebase"; // Firebase auth 객체 임포트
 import { Input } from "@/components/common/Input";
 import { Button } from "@/components/common/Button";
+import Link from "next/link"; // 회원가입 페이지로 이동하는 링크를 위해 Link 임포트
 
-const SignUpForm = () => {
+const SignInForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleSignUp = async (event: React.FormEvent) => {
+  const handleSignIn = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      if (user) {
-        await sendEmailVerification(user); // 이메일 인증 메일 전송
-        alert("회원가입 성공! 이메일을 확인하여 계정을 활성화해주세요.");
-        router.push("/check-email"); // 이메일 확인 페이지로 리다이렉트
-      }
+      await signInWithEmailAndPassword(auth, email, password);
+      // 로그인 성공 후 메인 페이지 또는 이전 페이지로 리다이렉트
+      router.push("/"); // 메인 페이지로 리다이렉트
     } catch (error: unknown) { // 'any' 대신 'unknown' 사용
       if (error instanceof Error) { // 타입 가드
         setError(error.message);
@@ -41,10 +37,10 @@ const SignUpForm = () => {
   };
 
   return (
-    <form onSubmit={handleSignUp} className="flex flex-col space-y-4">
+    <form onSubmit={handleSignIn} className="flex flex-col space-y-4">
       {error && <p className="text-red-500 text-sm">{error}</p>}
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300"> {/* 다크 모드 텍스트 색상 추가 */}
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
           이메일
         </label>
         <Input
@@ -57,7 +53,7 @@ const SignUpForm = () => {
         />
       </div>
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300"> {/* 다크 모드 텍스트 색상 추가 */}
+        <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
           비밀번호
         </label>
         <Input
@@ -70,10 +66,16 @@ const SignUpForm = () => {
         />
       </div>
       <Button type="submit" disabled={loading}>
-        {loading ? "회원가입 중..." : "회원가입"}
+        {loading ? "로그인 중..." : "로그인"}
       </Button>
+      <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+        계정이 없으신가요?{" "}
+        <Link href="/signup" className="text-blue-600 hover:underline dark:text-blue-400">
+          회원가입
+        </Link>
+      </p>
     </form>
   );
 };
 
-export default SignUpForm;
+export default SignInForm;

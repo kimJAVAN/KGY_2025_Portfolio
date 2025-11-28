@@ -8,12 +8,12 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-slate-900 text-slate-50 hover:bg-slate-900/90',
+        default: 'bg-slate-900 text-slate-50 hover:bg-slate-900/90 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-50/90', // 다크 모드 스타일 추가
         destructive: 'bg-red-500 text-slate-50 hover:bg-red-500/90',
-        outline: 'border border-slate-200 bg-transparent hover:bg-slate-100',
-        secondary: 'bg-slate-100 text-slate-900 hover:bg-slate-100/80',
-        ghost: 'hover:bg-slate-100 hover:text-slate-900',
-        link: 'text-slate-900 underline-offset-4 hover:underline',
+        outline: 'border border-slate-200 bg-transparent hover:bg-slate-100 dark:border-gray-700 dark:hover:bg-gray-800 dark:text-gray-100', // 다크 모드 스타일 추가
+        secondary: 'bg-slate-100 text-slate-900 hover:bg-slate-100/80 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600', // 다크 모드 스타일 추가
+        ghost: 'hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-gray-800 dark:hover:text-gray-50', // 다크 모드 스타일 추가
+        link: 'text-slate-900 underline-offset-4 hover:underline dark:text-white', // 다크 모드 스타일 추가
       },
       size: {
         default: 'h-10 py-2 px-4',
@@ -31,12 +31,15 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {}
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean; // asChild prop 추가
+}
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, ...props }, ref) => { // asChild 구조 분해 할당 및 기본값 설정
+    const Comp = asChild ? React.Fragment : 'button'; // asChild가 true이면 Fragment, 아니면 button 엘리먼트 렌더링
     return (
-      <button
+      <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
